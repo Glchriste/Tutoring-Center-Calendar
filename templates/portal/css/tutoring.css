@@ -1,0 +1,19 @@
+.jumbotron h1 {
+			float: left;
+		}
+		.jumbotron img {
+			position: relative;
+			float: right;
+		}
+		.modal-content {
+		  margin-left: auto;
+		  margin-right: auto;
+		  max-width: 685px;
+		}
+		.modal-dialog {
+		  width: 685px;
+		}
+		.centering {
+	        float: none;
+	        margin: 0 auto;
+	    }

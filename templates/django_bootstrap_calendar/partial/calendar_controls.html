@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="btn-group {{ css_classes }}">
+        <button class="btn btn-primary" data-calendar-nav="prev"> {% trans 'Prev' %} </button>
+        <button class="btn btn-default" data-calendar-nav="today">Today </button>
+        <button class="btn btn-primary" data-calendar-nav="next">{% trans 'Next' %}</button>
+    </div>
+    <div class="btn-group {{ css_classes }}">
+        <button class="btn btn-success" data-calendar-view="year">{% trans 'Year' %}</button>
+        <button class="btn btn-success" data-calendar-view="month">{% trans 'Month' %}</button>
+        <button class="btn btn-success" data-calendar-view="day">{% trans 'Week' %}</button>
+        <button class="btn btn-success" data-calendar-view="day">{% trans 'Day' %}</button>
+    </div>
+</div>
+

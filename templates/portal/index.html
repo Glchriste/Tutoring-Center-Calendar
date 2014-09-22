@@ -1,0 +1,673 @@
+
+{% extends "portal/portal.html" %}
+{% comment %}
+  Main page of the calendar / portal.
+{% endcomment %}
+{% block head %}
+
+{% load staticfiles %}
+<!-- Actual index.html loaded by Django -->
+<title>CCI Tutoring Calendar - Home</title>
+
+	<meta name="description" content="Full view calendar component for twitter bootstrap with year, month, week, day views.">
+	<meta name="keywords" content="jQuery,Bootstrap,Calendar,HTML,CSS,JavaScript,responsive,month,week,year,day">
+	<meta name="author" content="Grace Christenbery">
+	<meta charset="UTF-8">
+
+	<link rel="stylesheet" href="{{STATIC_URL}}portal/components/bootstrap3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-datetimepicker.min.css">
+	<!-- <link rel="stylesheet" href="components/bootstrap3/css/bootstrap-theme.min.css"> -->
+	<link rel="stylesheet" href="{{STATIC_URL}}portal/css/calendar.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/tutoring.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-formhelpers.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/clockpicker.css">
+
+
+{% endblock %}
+
+  {% block content %}
+    <!-- <section>
+    <h4>Welcome, {{ user.first_name }}</h4>
+    <p>This is the main page of the web portal.</p>
+    </section>
+ -->
+
+<!-- <html>
+<body> -->
+<?php
+// header('content-type: application/json; charset=utf-8');
+header("access-control-allow-origin: *");
+?>
+
+
+</head>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/clockpicker.js"></script>
+<!-- <script type="text/javascript" src="{{STATIC_URL}}js/jquery-clockpicker.min.js"></script> -->
+
+<div class="container">
+	<div class="jumbotron">
+		<h1>CCI Tutoring Calendar</h1><a class="" id="#about" data-toggle="modal" data-target="#tutors-modal" data-keyboard="true"><img src="{{STATIC_URL}}portal/CCI-Tutors-Logo.png" height="190" width="300"></a>
+
+		<p>"Excellent tutoring at no cost to CCI students."</p>
+
+
+	</div>
+
+	<div class="page-header">
+
+
+        <!--div style="padding-top:5px; padding-bottom:25px"-->
+
+    <a class="btn btn-lg btn-primary" id="makeAppointment" data-toggle="modal" data-target="#appointment-modal" data-keyboard="true" onclick="setValues()"><b>Make an Appointment</b></a>
+
+    <a class="btn btn-lg btn-primary" id="tutorSchedule" data-toggle="modal" data-target="#tutor-modal" data-keyboard="true"><b>Tutor Schedule</b></a>
+
+		<h3></h3>
+		<!-- <div id="#hours">Today's Hours: </div> -->
+		<div class="pull-right form-inline">
+			{% load bootstrap_calendar %}
+			{% bootstrap_calendar_css %}
+			{% bootstrap_controls 'optional-css-classes' %}
+		</div>
+	</div>
+<!--/div-->
+	<div class="row">
+		<div class="col-md-9">
+			<div id="calendar"></div>
+		</div>
+		<div class="col-md-3">
+			<div class="row">
+			<h4>Events</h4>
+			<small>Upcoming Appointments and Openings</small>
+			<ul id="eventlist" class="nav nav-list"></ul>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+	<br><br>
+
+
+
+	<div class="modal fade tutors-modal" id="tutors-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal">
+			<div class="modal-content tutors-modal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">About</h4>
+				</div>
+				<div class="modal-body" style="overflow-y: visible;">
+				<p style="text-align: center">
+					<img src="{{STATIC_URL}}portal/tutors.png" width="623" height="216" id="#tutors-img" style="padding:10px;">
+				</p>
+				<h4>Tutoring Hours</h4>
+				<ul class="list-group">
+				  <li class="list-group-item"><b>Mon-Thu:</b> 8am-8pm, <b>Fri:</b> 8am-5pm </li>
+				</ul>
+				<h4>Courses</h4>
+				<ul class="list-group">
+				  <li class="list-group-item"><b>Intro to CS:</b> ITCS 1212, 1213 and ITIS  1212</li>
+				  <li class="list-group-item"><b>Data structure & Algorithms:</b> ITCS 2175,  2214, and  2215</li>
+				  <li class="list-group-item"><b>SIS Focus:</b> ITIS 2110,  2300,  3105,  3110,  3200, and  3300</li>
+				  <li class="list-group-item"><b>CS Focus:</b> ITCS 3134,  3146,  3152, 3160,  4121, and  4122</li>
+				  <li class="list-group-item"><b>Math Focus:</b> MATH 1241,  2164,  STAT 1220,  2122,  and 2223</li>
+				</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="modal fade appointment-modal" id="tutor-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal" >
+			<div class="modal-content tutors-modal" style="max-height : 250px;">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Tutor Scheduler</h4>
+				</div>
+				<div class="modal-body" style="height: 575px; left: 2.5%;">
+				<div class="container">
+	<div class="row">
+	  <div class="col-md-12">
+	  </div>
+		  <form role="form" action="/portal/tutor-availability/" method="post" id="tutor_form" class="form-horizontal">
+		    <div class="col-lg-6">
+		      {% csrf_token %}
+		      <div class="form-group">
+
+		        <label for="tutor" style="padding-top: 10px;">Name of Preferred Tutor</label>
+		        <select name="tutor" style="padding: 6px;padding-bottom: 6px;" class="form-control">
+		        	<option value="no_preference">Anyone Available</option>
+					<option value="Grace">Grace</option>
+					<option value="David">David</option>
+					<option value="Chinmai">Chinmai</option>
+				</select>
+
+
+
+		      	<input type="submit" name="submit" id="submit" value="Create Schedule" class="btn btn-info pull-right">
+
+		    </div>
+		  </form>
+	  </div>
+	</div>
+
+</div>
+
+				</div>
+				<div class="modal-footer">
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+    <script language="JavaScript" type="text/javascript">
+function setFields() {
+	document.getElementById("Email").value = document.getElementById("email1").value;
+	document.getElementById("appointment_form").submit();
+}
+</script>
+    {% if suggestion %}
+
+        <script language="JavaScript">
+            $(function() {
+            $('#submit1').trigger('click');
+            })
+        </script>
+
+    {% endif %}
+    {% if message %}
+
+        <script language="JavaScript">
+            $(function() {
+            $('#submit1').trigger('click');
+            })
+        </script>
+
+    {% endif %}
+
+
+    <a class="btn btn-lg btn-primary" style = "display:none" id="submit1" data-toggle="modal" data-target="#reminder-modal" data-keyboard="true"></a>
+
+     <div class="modal fade appointment-modal" id="reminder-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal">
+
+			<div class="modal-content tutors-modal" style="max-height : 300px;">
+                <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Alert</h4>
+				</div>
+
+            <div class="modal-body" style="height: 575px; left: 2.5%;">
+				<div class="container">
+	<div class="row">
+	  <div class="col-md-12">
+	  </div>
+
+
+            {% if message %}
+
+                <label for="email" style="padding-top: 10px; padding-bottom: 6px;">Selected appointment slot is not available for that day. Please Book a new appointment!!!</label><br>
+
+            {% endif %}
+
+            {%if suggestion %}
+                <label for="email" style="padding-top: 10px; padding-bottom: 6px;">You tried to book appointment under {{tutor}}. Selected appointment slot is not available.</label><br>
+
+                <label for="" style="padding-top: 0px; padding-bottom: 10px;">Would you like to choose following suggested slot?</label><br>
+                <label for="" style="padding-top: 0px; padding-bottom: 10px;">Time Slot - {{suggestion}} </label><br>
+                <label for="" style="padding-top: 0px; padding-bottom: 10px;">Date - {{date}}</label><br>
+                <span id="fname1" style="display:none;">{{name}}</span>
+                <span id="course1" style="display:none;">{{course}}</span>
+                <span id="date1" style="display:none;">{{date}}</span>
+                <span id="time1" style="display:none;">{{time}}</span>
+                <span id="duration1" style="display:none;">{{duration}}</span>
+                <span id="tutor1" style="display:none;">{{tutor}}</span>
+                <span id="email1" style="display:none;">{{email}}</span>
+                <a class="btn btn-lg btn-primary" style = "" id="submitapp"  href="JavaScript:setFormValues()" >Book this appointment</a>
+             {%endif%}
+
+
+        <script language="JavaScript" type="text/javascript">
+                function setFormValues() {
+                    document.getElementById("full_name").value = document.getElementById("fname1").innerText
+                    document.getElementById("course").value = document.getElementById("course1").innerText
+                    document.getElementById("date").value = document.getElementById("date1").innerText
+                    document.getElementById("time").value = document.getElementById("time1").innerText
+                    document.getElementById("duration").value = document.getElementById("duration1").innerText
+                    document.getElementById("tutor").value = document.getElementById("tutor1").innerText
+                    document.getElementById("email").value = document.getElementById("email1").innerText
+                    $(function() {
+                    $('#submitAppForm').trigger('click');
+                    })
+
+                }
+
+
+                </script>
+
+
+
+
+                <a class="" style = "" id="submitapp1" data-toggle="modal" data-dismiss="modal" data-target="#appointment-modal" data-keyboard="true"><b>New appointment</b></a>
+
+      </div>
+	</div>
+
+</div>
+
+				</div>
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+	<div class="modal fade appointment-modal"  id="appointment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal">
+			<div class="modal-content tutors-modal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Appointment Scheduler</h4>
+				</div>
+				<div class="modal-body" style="height: 575px; left: 2.5%;">
+				<div class="container">
+	<div class="row">
+	  <div class="col-md-12">
+	  </div>
+
+      <form role="form" action="/portal/make-appointment/" name="makeAppointment" method="post" id="appointment_form" class="form-horizontal">
+		    <div class="col-lg-6">
+		      {% csrf_token %}
+		      <div class="form-group">
+		      	<!--label for="first_name" style="padding-top: 0px;">First Name</label>
+		        <input type="text" name="first_name" class="form-control" style="padding: 6px;" placeholder = " Enter Your First Name">
+		        <label for="last_name" style="padding-top: 10px;">Last Name</label>
+		        <input type="text" name="last_name" class="form-control" style="padding: 6px;" placeholder = " Enter Your Last Name"-->
+
+                <label for="full_name" style="padding-top: 0px;">Full Name</label>
+		        <input type="text" id="full_name" name="full_name" class="form-control" style="padding: 6px;" placeholder = " Enter Your First Name">
+		        <!--label for="email" style="padding-top: 10px;">UNCC Email</label-->
+
+                <script>
+                function setValues() {
+
+                    var text = '{"courses":[' +
+                    '{"course":"ITCS 1212" },' +
+                    '{"course":"ITCS 1213" },' +
+                    '{"course":"ITCS 2214" },' +
+                    '{"course":"ITCS 2215" },' +
+                    '{"course":"ITCS 3134" },' +
+                    '{"course":"ITCS 3146" },' +
+                    '{"course":"ITCS 3152" },' +
+                    '{"course":"ITCS 3160" },' +
+                    '{"course":"ITCS 4121" },' +
+                    '{"course":"ITCS 4122" },' +
+                    '{"course":"MATH 1241" },' +
+                    '{"course":"MATH 2164" },' +
+                    '{"course":"STAT 1220" },' +
+                    '{"course":"STAT 2122" },' +
+                    '{"course":"STAT 2123" },' +
+                    '{"course":"ITCS 2175" }]}';
+
+
+                    obj = eval ("(" + text + ")");
+
+                    var val = 'courses'
+                    var options = '';
+                    for (var i = 0; i < obj.courses.length; i++) {
+                        options += '<option value="' + obj.courses[i].course + '">' + obj.courses[i].course + '</option>';
+
+                    }
+                    $("#course").html(options);
+
+
+                }
+                </script>
+
+
+
+		        <label for="course" style="padding-top: 10px;">What Course Do You Need Help With?</label>
+		        <select id="course" name="course" style="padding: 6px;" class="form-control" onchange="setTutors(this.value)">
+		        	<option value="" disabled selected>Select a Course</option>
+					<!--option value="ITCS 1212">ITCS 1212</option>
+					<option value="ITCS 1213">ITCS 1213</option>
+					<option value="ITIS 1212">ITIS 1212</option>
+					<option value="ITCS 2175">ITCS 2175</option>
+					<option value="ITCS 2214">ITCS 2214</option>
+					<option value="ITCS 2215">ITCS 2215</option>
+					<option value="ITIS 2110">ITIS 2110</option>
+					<option value="ITIS 2300">ITIS 2300</option>
+					<option value="ITIS 3105">ITIS 3105</option>
+					<option value="ITIS 3110">ITIS 3110</option>
+					<option value="ITIS 3200">ITIS 3200</option>
+					<option value="ITIS 3300">ITIS 3300</option>
+					<option value="ITCS 3134">ITCS 3134</option>
+					<option value="ITCS 3146">ITCS 3146</option>
+					<option value="ITCS 3152">ITCS 3152</option>
+					<option value="ITCS 3160">ITCS 3160</option>
+					<option value="ITCS 4121">ITCS 4121</option>
+					<option value="ITCS 4122">ITCS 4122</option>
+					<option value="MATH 1241">MATH 1241</option>
+					<option value="MATH 2164">MATH 2164</option>
+					<option value="STAT 1220">STAT 1220</option>
+					<option value="STAT 2122">STAT 2122</option>
+					<option value="STAT 2223">STAT 2223</option>
+					<option value="Other">Other</option-->
+				</select>
+
+             <script>
+                function setTutors(course1) {
+                    //window.alert("hello")
+                    var coursetutor = '{"pairs":[' +
+                    '{"pair":"ITCS 1212,Grace,Chinmai,David" },' +
+                    '{"pair":"ITCS 1213,Grace,Chinmai,David" },' +
+                    '{"pair":"ITCS 2214,Grace,David" },' +
+                    '{"pair":"ITCS 2215,Grace,David" },' +
+                    '{"pair":"ITCS 3134,Grace" },' +
+                    '{"pair":"ITCS 3146,David" },' +
+                    '{"pair":"ITCS 3152,David" },' +
+                    '{"pair":"ITCS 3160,David" },' +
+                    '{"pair":"ITCS 4121,Grace" },' +
+                    '{"pair":"ITCS 4122,Grace" },' +
+                    '{"pair":"MATH 1241,David,Grace,Chinmai" },' +
+                    '{"pair":"MATH 2164,Grace" },' +
+                    '{"pair":"STAT 1220,David" },' +
+                    '{"pair":"STAT 2122,David,Chinmai" },' +
+                    '{"pair":"STAT 2123,David" },' +
+                    '{"pair":"ITCS 2175,David,Grace" }]}';
+
+
+                    obj1 = eval ("(" + coursetutor+ ")");
+                    var courseSelect = course1
+//window.alert("middle")
+
+                    var tutors= '';
+for (var i = 0; i < obj1.pairs.length; i++) {
+                         //  window.alert(i)
+    var course1 = obj1.pairs[i].pair.split(",")
+
+    if( course1[0] == courseSelect){
+        //window.alert(course1[1])
+        for (var j = 1; j < course1.length; j++) {
+           tutors+= '<option value="' + course1[j] + '">' + course1[j] + '</option>';} break;
+}
+}
+
+                   // window.alert("after")
+                    $("#tutor").html(tutors);
+               //window.alert("exiting")
+
+                }
+
+
+</script>
+
+            <label for="tutor" style="padding-top: 10px;">Name of Preferred Tutor</label>
+		        <select name="tutor" id="tutor" style="padding: 6px;" class="form-control">
+		        	<option value="Anyone">Anyone Available</option>
+					<option value="Grace">Grace</option>
+					<option value="David">David</option>
+					<option value="Chinmai">Chinmai</option>
+				</select>
+
+
+
+               <label for="date" style="padding-top: 10px;">Calendar Date</label>
+				<div class="input-group datepicker" id = "datepicker" style="">
+				<input type="text" id="date" name="date" class="form-control" placeholder=" Example: May 28 2014" autocomplete="off" ">
+					<span class="input-group-addon">
+				        <span class="glyphicon glyphicon-calendar"></span>
+				    </span>
+				</div>
+				<label for="time" style="padding-top: 10px;">Preferred Time</label>
+				<div class="input-group clockpicker" id = "clockpicker" style="">
+				    <input type="text" class="form-control" id = "time" name="time" placeholder=" 08:00 am to 08:00 pm"  autocomplete="off">
+				    <span class="input-group-addon">
+				        <span class="glyphicon glyphicon-time"></span>
+				    </span>
+				</div>
+				<script type="text/javascript">
+					$('.clockpicker').clockpicker({
+					    placement: 'top',
+					    align: 'left',
+					    autoclose: true,
+					    'default': 'now'
+					});
+
+				</script>
+        <!-- Invalid Time Slot Message -->
+        <div class="clock-alert" id="clock-warning-alert" style="display:none;">
+          <div class="alert alert-warning" id="clock-warning">
+              <a href="#" class="close" data-dismiss="alert">&times;</a>
+              <strong>Heads up!</strong> The time was rounded to the closest slot.
+          </div>
+        </div>
+        <!-- Valid Time Slot Message -->
+        <div class="clock-alert" id="clock-success-alert" style="display:none;">
+          <div class="alert alert-success" id="clock-success">
+              <a href="#" class="close" data-dismiss="alert">&times;</a>
+              <strong>Great!</strong> That time works.
+          </div>
+        </div>
+        <script type="text/javascript">
+          $(".close").click(function(e){
+            //If the close button is triggered on a Bootstrap alert
+            //and not a modal pop over, disable default behavior
+            if (e.target.type != 'button') {
+              e.stopPropagation();
+              e.preventDefault();
+            }
+            $("#clock-warning-alert").hide();
+            $('#clock-warning').hide();
+            $("#clock-success-alert").hide();
+            $('#clock-success').hide();
+            $('#appointment-body').height(545);
+          });
+        </script>
+
+				</script>
+	          <label for="duration" style="padding-top: 10px; ">Select duration of meeting</label>
+		        <select id="duration" name="duration" style="padding: 6px;" class="form-control">
+		        	<option value="no_preference">Select Time Slot</option>
+					<option value="15">15 Min</option>
+					<option value="30">30 Min</option>
+					<option value="45">45 Min</option>
+                    <option value="60">1 Hour</option>
+				</select>
+
+
+
+                <script src="/js/jquery.js"></script>
+                <script language="JavaScript">
+                    function toggle(className,obj){
+                        var $input = $(obj);
+                        if ($input.prop('checked')) $(className).show();
+                        else $(className).hide();
+                    }
+                </script>
+
+                <div style="padding-top: 10px;">
+                <input type="checkbox" name="emailreminder" onclick="toggle('#email',this)" value="emailreminder">
+                <label for="email" style="padding-top: 10px;">Email Reminder</label>
+                </div>
+               <input type="text" id = "email" name="email" class="form-control" style="padding: 6px; display:none;" placeholder = " Enter Your UNCC Email"  value ="" >
+
+               <input type="text" id = "email" name="email" class="form-control" style="padding: 6px; display:none;" placeholder = " Enter Your UNCC Email"  value ="" >
+               <label for="space" style="padding-top: 10px; padding-bottom: 6px; "></label>
+               <div style="padding-top:6px;"></div>
+		      	<input type="submit" name="submit" id="submitAppForm" value="Schedule Appointment" class="btn btn-info pull-right">
+
+            <!--a class="btn btn-lg btn-primary" id="submit" data-toggle="modal" data-target="#reminder-modal" data-keyboard="true"><b>Schedule Appointment</b></a-->
+    	    </div>
+		  </form>
+	  </div>
+	</div>
+
+</div>
+				</div>
+				<div class="modal-footer">
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="modal fade" id="events-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Event</h4>
+				</div>
+				<div class="modal-body" style="height: 400px">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Date Picker for the Date Input in the Appointment Form -->
+	<script>
+	  $(function() {
+	  	$("#date").css('z-index','1000000');
+        $("#date").datepicker({ beforeShowDay: $.datepicker.noWeekends })
+	    //$( "#date" ).datepicker();
+	  });
+	</script>
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/components/underscore/underscore-min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/components/bootstrap3/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/components/jstimezonedetect/jstz.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/nl-NL.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/fr-FR.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/de-DE.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/el-GR.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/it-IT.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/pl-PL.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/pt-BR.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/es-MX.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/es-ES.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/ru-RU.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/sv-SE.js"></script>
+  	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/cs-CZ.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/calendar.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/dailyhours.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/date.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-formhelpers.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	{% if user.is_authenticated %}
+	Logged in as: {{ user.username }}
+	{% if user.username == 'student' %}
+		<script>
+
+			document.getElementById("tutorSchedule").style.display = "none";
+            document.getElementById("makeAppointment").style.display = "";
+
+            window.student = true;
+			window.tutor = false;
+
+			// console.log('Logged in as student');
+		</script>
+	{% elif user.username == 'admin' or user.username == 'tutor' %}
+		<script>
+
+			document.getElementById("makeAppointment").style.display = "none";
+            document.getElementById("tutorSchedule").style.display = "";
+
+            window.student = false;
+			window.tutor = true;
+
+			// console.log('Logged in as tutor');
+		</script>
+	{% endif %}
+{% else %}
+
+	<script>
+        document.getElementById("tutorSchedule").style.display = "none";
+        document.getElementById("makeAppointment").style.display = "";
+
+		window.student = false;
+		window.tutor = false;
+	</script>
+{% endif %}
+
+{% load bootstrap_calendar %}
+{% bootstrap_calendar_css %}
+{% bootstrap_calendar_js language="template" %}
+{% bootstrap_calendar_init language="template" %}
+{% bootstrap_calendar 'optional-css-classes' %}
+</div>
+
+<div id='output'></div>
+<script>
+	function submitForm() {
+		$.ajax({
+			type: "POST",
+			url: "http://localhost:8000/portal/",
+			dataType: "json",
+			async: true,
+			data: {
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+			},
+			success: function (json) {
+				$('#output').html('AJAX Success');
+				console.log('AJAX Success')
+
+			}
+		});
+	}
+
+	function selectClass() {
+		$('.dropdown-menu li').click(function(e){
+			e.preventDefault();
+			  var selected = $(this).text();
+			  console.log(selected);
+			});
+	}
+	function submitAppointment() {
+		 var selected = '';
+	    $('.dropdown-menu li').click(function(e){
+			e.preventDefault();
+			  selected = $(this).text();
+			  // $('.category').val(selected);
+			  console.log(selected);
+			});
+	}
+	function makeAppointment() {
+	    console.log('Make Appointment Clicked');
+	}
+	function showTutors() {
+	    //console.log('Tutors clicked');
+	}
+	function showHours() {
+	    // console.log('Hours clicked');
+	}
+	function getUnixTime(date_string) {
+		//string is of format: "18-Apr-2014 15:00:00"
+		var unixtime = Date.parse(date_string).getTime()/1000;
+		// console.log(unixtime + "000");
+		return (unixtime.toString() + "000")
+	}
+	// getUnixTime("18-Apr-2014 19:00:00");
+</script>
+
+
+{% endblock %}

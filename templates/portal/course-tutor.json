@@ -1,0 +1,62 @@
+{
+   "ITCS 1212":[
+		{"tutor":"David"},
+		{"tutor":"Grace"},
+        {"tutor":"Chinmai"}
+	],
+    "ITCS 1213":[
+		{"tutor":"David"},
+		{"tutor":"Grace"},
+        {"tutor":"Chinmai"}
+	],
+    "ITCS 2175":[
+		{"tutor":"David"},
+		{"tutor":"Grace"},
+        {"tutor":"Chinmai"}
+	],
+    "ITCS 2214":[
+		{"tutor":"David"},
+		{"tutor":"Grace"}
+	],
+    "ITCS 2215":[
+		{"tutor":"David"},
+		{"tutor":"Grace"}
+	],
+    "ITCS 3134":[
+		{"tutor":"Grace"}
+	],
+    "ITCS 3146":[
+		{"tutor":"David"}
+	],
+    "ITCS 3152":[
+		{"tutor":"David"}
+	],
+    "ITCS 3160":[
+	
+	{"tutor":"David"},
+		{"tutor":"Chinmai"}
+	],
+    "ITCS 4121":[
+		{"tutor":"Grace"}
+	],
+    "ITCS 4122":[
+		{"tutor":"Grace"}
+	],
+    "MATH 1241":[
+		{"tutor":"David"},
+		{"tutor":"Grace"},
+        {"tutor":"Chinmai"}
+	],
+    "MATH 2164":[
+		{"tutor":"Grace"}
+	],
+    "STAT 1220":[
+		{"tutor":"David"}
+	],
+    "STAT 2122":[
+		{"tutor":"David"},
+		{"tutor":"Chinmai"}
+	],
+    "STAT 2123":[
+		{"tutor":"David"}
+	]

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <!-- {% load staticfiles %} -->
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+  	<!-- Load Bootstrap -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+  	<script src="{% static 'portal/js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  	<!-- {% load bootstrap3 %}
+  	{# Load CSS and JavaScript #}
+  	{% bootstrap_css %} {% bootstrap_javascript %} -->
+    {% load bootstrap_calendar %}
+    {% bootstrap_calendar_css %}
+    <script src="{% static 'js/underscore-min.js' %}"></script>
+    {% bootstrap_calendar_js language="EN-en" %}
+    {% bootstrap_calendar_init language="EN-en" %}
+    {% block body %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,550 @@
+
+{% extends "portal/portal.html" %}
+{% comment %}
+  Main page of the calendar / portal.
+{% endcomment %}
+{% block head %}
+
+{% load staticfiles %}
+<title>CCI Tutoring Calendar - Real?</title>
+
+	<meta name="description" content="Full view calendar component for twitter bootstrap with year, month, week, day views.">
+	<meta name="keywords" content="jQuery,Bootstrap,Calendar,HTML,CSS,JavaScript,responsive,month,week,year,day">
+	<meta name="author" content="Grace Christenbery">
+	<meta charset="UTF-8">
+
+	<link rel="stylesheet" href="{{STATIC_URL}}portal/components/bootstrap3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-datetimepicker.min.css">
+	<!-- <link rel="stylesheet" href="components/bootstrap3/css/bootstrap-theme.min.css"> -->
+	<link rel="stylesheet" href="{{STATIC_URL}}portal/css/calendar.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/tutoring.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-formhelpers.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/clockpicker.css">
+
+
+{% endblock %}
+
+  {% block content %}
+    <!-- <section>
+    <h4>Welcome, {{ user.first_name }}</h4>
+    <p>This is the main page of the web portal.</p>
+    </section>
+ -->
+
+<!-- <html>
+<body> -->
+<?php
+// header('content-type: application/json; charset=utf-8');
+header("access-control-allow-origin: *");
+?>
+
+
+</head>
+
+<script src="//code.jquery.com/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/clockpicker.js"></script>
+<!-- <script type="text/javascript" src="{{STATIC_URL}}js/jquery-clockpicker.min.js"></script> -->
+
+<div class="container">
+	<div class="jumbotron">
+		<h1>CCI Tutoring Calendar - Real?</h1><img src="{{STATIC_URL}}portal/CCI-Tutors-Logo.png" height="190" width="300">
+
+		<p>"Excellent tutoring at no cost to CCI students."</p>
+
+		<a class="btn btn-lg btn-primary" id="makeAppointment" data-toggle="modal" data-target="#appointment-modal" data-keyboard="true"><b>Make an Appointment</b></a>
+		<a class="btn btn-default btn-lg" id="#filter" data-toggle="modal" data-target="#filter-modal" data-keyboard="true">Search</a>
+		<a class="btn btn-default btn-lg" id="#about" data-toggle="modal" data-target="#tutors-modal" data-keyboard="true">About</a>
+	</div>
+
+	<div class="page-header">
+
+		<!-- <div class="pull-right form-inline">
+			<div class="btn-group">
+				<button class="btn btn-primary" data-calendar-nav="prev"><< Prev</button>
+				<button class="btn btn-default" data-calendar-nav="today" id="#today">Today</button>
+				<button class="btn btn-primary" data-calendar-nav="next">Next >></button>
+			</div>
+			<div class="btn-group">
+				<button class="btn btn-success" data-calendar-view="year">Year</button>
+				<button class="btn btn-success" data-calendar-view="month">Month</button>
+				<button class="btn btn-success" data-calendar-view="week">Week</button>
+				<button class="btn btn-success" data-calendar-view="day">Day</button>
+			</div>
+		</div>-->
+
+
+		<h3></h3>
+		<!-- <div id="#hours">Today's Hours: </div> -->
+		<div class="btn-group">
+		<button class="btn btn-lg btn-success" data-calendar-nav="today" data-calendar-view="day" id="#hours" onclick="showHours()"><b>Today's Hours: </b></button>
+		</div>
+		<small></small>
+		<div class="pull-right form-inline">
+			{% load bootstrap_calendar %}
+			{% bootstrap_calendar_css %}
+<!-- {% bootstrap_calendar_js language="template" %}
+{% bootstrap_calendar_init language="template" %} -->
+			{% bootstrap_controls 'optional-css-classes' %}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-9">
+			<div id="calendar"></div>
+		</div>
+		<div class="col-md-3">
+			<div class="row">
+				<!-- <select id="first_day" class="form-control">
+					<option value="" selected="selected">First day of week language-dependant</option>
+					<option value="2">First day of week is Sunday</option>
+					<option value="1">First day of week is Monday</option>
+				</select>
+				<select id="language" class="form-control">
+					<option value="">Select Language (default: en-US)</option>
+					<option value="nl-NL">Dutch</option>
+					<option value="fr-FR">French</option>
+					<option value="de-DE">German</option>
+					<option value="el-GR">Greek</option>
+					<option value="it-IT">Italian</option>
+					<option value="pl-PL">Polish</option>
+					<option value="pt-BR">Portuguese (Brazil)</option>
+					<option value="es-MX">Spanish (Mexico)</option>
+					<option value="es-ES">Spanish (Spain)</option>
+					<option value="ru-RU">Russian</option>
+					<option value="sv-SE">Swedish</option>
+				</select> -->
+			<h4>Events</h4>
+			<small>Upcoming Appointments and Openings</small>
+			<ul id="eventlist" class="nav nav-list"></ul>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+	<br><br>
+
+
+	<div class="modal fade tutors-modal" id="tutors-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal">
+			<div class="modal-content tutors-modal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">About</h4>
+				</div>
+				<div class="modal-body" style="overflow-y: visible;">
+				<p style="text-align: center">
+					<img src="{{STATIC_URL}}portal/tutors.png" width="623" height="216" id="#tutors-img" style="padding:10px;">
+				</p>
+				<h4>Tutoring Hours</h4>
+				<ul class="list-group">
+				  <li class="list-group-item"><b>Mon-Thu:</b> 8am-8pm, <b>Fri:</b> 8am-5pm </li>
+				</ul>
+				<h4>Courses</h4>
+				<ul class="list-group">
+				  <li class="list-group-item"><b>Intro to CS:</b> ITCS 1212, 1213 and ITIS  1212</li>
+				  <li class="list-group-item"><b>Data structure & Algorithms:</b> ITCS 2175,  2214, and  2215</li>
+				  <li class="list-group-item"><b>SIS Focus:</b> ITIS 2110,  2300,  3105,  3110,  3200, and  3300</li>
+				  <li class="list-group-item"><b>CS Focus:</b> ITCS 3134,  3146,  3152, 3160,  4121, and  4122</li>
+				  <li class="list-group-item"><b>Math Focus:</b> MATH 1241,  2164,  STAT 1220,  2122,  and 2223</li>
+				</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade appointment-modal" id="appointment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal">
+			<div class="modal-content tutors-modal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Appointment Scheduler</h4>
+				</div>
+				<div class="modal-body" style="height: 575px; left: 2.5%;">
+				<div class="container">
+	<div class="row">
+	  <div class="col-md-12">
+	    <!-- <small><i></i>Add alerts if form ok... success, else error.</i></small> -->
+		<!-- <div class="alert alert-success"><strong><span class="glyphicon glyphicon-send"></span> Success! Message sent. (If form ok!)</strong></div>
+	    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span><strong> Error! Please check the inputs. (If form error!)</strong></div> -->
+	  </div>
+		  <!-- <form role="form" action="http://www.glchriste.com/TutoringApp/appointment.php" method="post" id="appointment_form"> -->
+		  <!-- <form role="form" action="" onclick="submitForm()" id="appointment_form"> -->
+		  <form role="form" action="/portal/make-appointment/" method="post" id="appointment_form" class="form-horizontal">
+		    <div class="col-lg-6">
+		      <!-- <div class="well well-sm"><strong><i class="glyphicon glyphicon-ok form-control-feedback"></i> Required Field</strong></div> -->
+		      <!-- <div class="form-group"> -->
+		      {% csrf_token %}
+		      <div class="form-group">
+		      	<label for="first_name" style="padding-top: 0px;">First Name</label>
+		        <input type="text" name="first_name" class="form-control" style="padding: 6px;" placeholder = " Enter Your First Name">
+		        <label for="last_name" style="padding-top: 10px;">Last Name</label>
+		        <input type="text" name="last_name" class="form-control" style="padding: 6px;" placeholder = " Enter Your Last Name">
+		        <label for="email" style="padding-top: 10px;">UNCC Email</label>
+		        <input type="text" name="email" class="form-control" style="padding: 6px;" placeholder = " Enter Your UNCC Email">
+		        <label for="course" style="padding-top: 10px;">What Course Do You Need Help With?</label>
+		        <!-- <input type="text" name="course" class="form-control" style="padding: 6px;" placeholder = " Enter the Course Name"> -->
+		        <select name="course" style="padding: 6px;" class="form-control">
+		        	<option value="" disabled selected>Select a Course</option>
+					<option value="ITCS 1212">ITCS 1212</option>
+					<option value="ITCS 1213">ITCS 1213</option>
+					<option value="ITIS 1212">ITIS 1212</option>
+					<option value="ITCS 2175">ITCS 2175</option>
+					<option value="ITCS 2214">ITCS 2214</option>
+					<option value="ITCS 2215">ITCS 2215</option>
+					<option value="ITIS 2110">ITIS 2110</option>
+					<option value="ITIS 2300">ITIS 2300</option>
+					<option value="ITIS 3105">ITIS 3105</option>
+					<option value="ITIS 3110">ITIS 3110</option>
+					<option value="ITIS 3200">ITIS 3200</option>
+					<option value="ITIS 3300">ITIS 3300</option>
+					<option value="ITCS 3134">ITCS 3134</option>
+					<option value="ITCS 3146">ITCS 3146</option>
+					<option value="ITCS 3152">ITCS 3152</option>
+					<option value="ITCS 3160">ITCS 3160</option>
+					<option value="ITCS 4121">ITCS 4121</option>
+					<option value="ITCS 4122">ITCS 4122</option>
+					<option value="MATH 1241">MATH 1241</option>
+					<option value="MATH 2164">MATH 2164</option>
+					<option value="STAT 1220">STAT 1220</option>
+					<option value="STAT 2122">STAT 2122</option>
+					<option value="STAT 2223">STAT 2223</option>
+					<option value="Other">Other</option>
+				</select>
+		        <label for="tutor" style="padding-top: 10px;">Name of Preferred Tutor</label>
+		        <select name="tutor" style="padding: 6px;" class="form-control">
+		        	<option value="no_preference">Anyone Available</option>
+					<option value="Grace">Grace</option>
+					<option value="David">David</option>
+					<option value="Chinmai">Chinmai</option>
+				</select>
+				<label for="date" style="padding-top: 10px;">Calendar Date</label>
+				<div class="input-group datepicker" id = "datepicker" style="padding-bottom: 6px; padding-top: 6px;">
+				<input type="text" id="date" name="date" class="form-control" placeholder=" Example: May 28 2014" autocomplete="off">
+					<span class="input-group-addon">
+				        <span class="glyphicon glyphicon-calendar"></span>
+				    </span>
+				</div>
+				<label for="time" style="padding-top: 10px;">Preferred Time</label>
+				<div class="input-group clockpicker" id = "clockpicker" style="padding-top: 6px; padding-bottom: 20px;">
+				    <input type="text" class="form-control" id = "time" name="time" value="08:00AM" autocomplete="off">
+				    <span class="input-group-addon">
+				        <span class="glyphicon glyphicon-time"></span>
+				    </span>
+				</div>
+				<script type="text/javascript">
+					$('.clockpicker').clockpicker({
+					    placement: 'top',
+					    align: 'left',
+					    autoclose: true,
+					    'default': 'now'
+					});
+
+				</script>
+			<!-- </div> -->
+		     <!--  <div class="control-group">
+		     <!--      <!-- <label class="control-label">What class do you need tutoring for?</label> -->
+		     <!--       <div class="btn-group">
+					  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+					    <b>What class do you need tutoring for?</b> <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu" id="#class-list">
+					    <li><a href="#" onclick="selectClass()">ITCS 1212</a></li>
+					    <li><a href="#" onclick="selectClass()">ITCS 1213</a></li>
+					    <li><a href="#" onclick="selectClass()">ITIS 1212</a></li>
+					    <li class="divider"></li>
+					    <li><a href="#">ITCS 2175</a></li>
+					  </ul>
+					</div>
+				<br></br>
+		        <label for="InputName">Your First and Last Name</label>
+		        <div class="input-group">
+		          <input type="text" class="form-control" name="InputName" id="InputName" placeholder="Enter your First and Last Name" required>
+		          <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div>
+		      </div>
+		      <p>
+		      <div class="form-group">
+		        <label for="InputEmail">Your UNCC Email</label>
+		        <div class="input-group">
+		          <input type="email" class="form-control" id="InputEmail" name="InputEmail" placeholder="Enter your UNCC Email" required  >
+		          <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div>
+		      </div>
+		      <div class="form-group">
+		        <label for="InputMessage">Course You Need Help With</label>
+		        <div class="input-group">
+		          <!-- <textarea name="InputMessage" id="InputMessage" class="form-control" rows="5" required></textarea>
+		          <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div> -->
+		          <!--<input type="text" class="form-control" name="InputCourse" id="InputCourse" placeholder="Enter the Course Name" required>
+		          <!--<span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div> -->
+		      <!-- </div>
+		      <div class="form-group">
+		        <label for="InputReal">What is 4+3? (just in case you're a robot)</label>
+		        <div class="input-group">
+		          <input type="text" class="form-control" name="InputReal" id="InputReal" required>
+		          <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div>
+		      </div> -->
+		      	<input type="submit" name="submit" id="submit" value="Schedule Appointment" class="btn btn-info pull-right">
+		     	<!--
+		     	<button type="submit" name="submit" id="submit" value="Schedule Appointment" class="btn btn-info pull-right">Schedule Appointment  <span class="glyphicon glyphicon-calendar"></span></button> -->
+		      <!-- <input type="submit" name="submit" id="submit" value="Submit" onclick="submitAppointment()" class="btn btn-info pull-right"> -->
+		    </div>
+		  </form>
+	  </div>
+	</div>
+
+</div>
+
+				</div>
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade filter-modal" id="filter-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog tutors-modal">
+			<div class="modal-content tutors-modal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Search for Openings</h4>
+				</div>
+				<div class="modal-body" style="height: 575px; left: 2.5%;">
+				<div class="container">
+	<div class="row">
+	  <div class="col-md-12">
+	    <!-- <small><i></i>Add alerts if form ok... success, else error.</i></small> -->
+		<!-- <div class="alert alert-success"><strong><span class="glyphicon glyphicon-send"></span> Success! Message sent. (If form ok!)</strong></div>
+	    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span><strong> Error! Please check the inputs. (If form error!)</strong></div> -->
+	  </div>
+		  <!-- <form role="form" action="http://www.glchriste.com/TutoringApp/appointment.php" method="post" id="appointment_form"> -->
+		  <!-- <form role="form" action="" onclick="submitForm()" id="appointment_form"> -->
+		  <form role="form" action = "/portal/search/" method="post" id="search_form" class="form-horizontal">
+		  {% csrf_token %}
+		  <script>
+		  // function search() {
+		     //   $("#search_form").submit(function(event)
+			    // {
+			    // 	console.log("Search function called");
+			    //     event.preventDefault();
+			    //     // var input_string
+
+			    //     $.ajax({
+			    //         type: "POST",
+			    //         url: "/portal/search/",
+			    //         processData: false,
+			    //         dataType: "json",
+			    //         data : {
+       //                                  clientinput : input_string,
+       //                                  csrfmiddlewaretoken: '{{ csrf_token }}'
+       //                          },
+			    //         success: function(data){
+			    //             $.each(data, function(key, value){
+			    //                 alert( key + ': ' + value );
+			    //                 });
+			    //             }
+			    //         });
+			    // });
+		   // }
+		  </script>
+		    <div class="col-lg-6">
+		      <!-- <div class="well well-sm"><strong><i class="glyphicon glyphicon-ok form-control-feedback"></i> Required Field</strong></div> -->
+		      <!-- <div class="form-group"> -->
+
+		      <div class="form-group">
+		        <label for="course-search" style="padding-top: 10px;">Filter by Course</label>
+		        <!-- <input type="text" name="course" class="form-control" style="padding: 6px;" placeholder = " Enter the Course Name"> -->
+		        <select name="course-search" style="padding: 6px;" class="form-control" id="class_name">
+		        	<option value="" disabled selected>Select a Course</option>
+					<option value="ITCS 1212">ITCS 1212</option>
+					<option value="ITCS 1213">ITCS 1213</option>
+					<option value="ITIS 1212">ITIS 1212</option>
+					<option value="ITCS 2175">ITCS 2175</option>
+					<option value="ITCS 2214">ITCS 2214</option>
+					<option value="ITCS 2215">ITCS 2215</option>
+					<option value="ITIS 2110">ITIS 2110</option>
+					<option value="ITIS 2300">ITIS 2300</option>
+					<option value="ITIS 3105">ITIS 3105</option>
+					<option value="ITIS 3110">ITIS 3110</option>
+					<option value="ITIS 3200">ITIS 3200</option>
+					<option value="ITIS 3300">ITIS 3300</option>
+					<option value="ITCS 3134">ITCS 3134</option>
+					<option value="ITCS 3146">ITCS 3146</option>
+					<option value="ITCS 3152">ITCS 3152</option>
+					<option value="ITCS 3160">ITCS 3160</option>
+					<option value="ITCS 4121">ITCS 4121</option>
+					<option value="ITCS 4122">ITCS 4122</option>
+					<option value="MATH 1241">MATH 1241</option>
+					<option value="MATH 2164">MATH 2164</option>
+					<option value="STAT 1220">STAT 1220</option>
+					<option value="STAT 2122">STAT 2122</option>
+					<option value="STAT 2223">STAT 2223</option>
+					<option value="Other">Other</option>
+				</select>
+		        <label for="tutor-search" style="padding-top: 10px;">Filter by Tutor</label>
+		        <select name="tutor-search" style="padding: 6px;" class="form-control">
+		        	<option value="no_preference">Anyone Available</option>
+					<option value="Grace">Grace</option>
+					<option value="David">David</option>
+					<option value="Chinmai">Chinmai</option>
+				</select>
+		      	<div style="padding-bottom:20px;"></div>
+		      	<input type="submit" name="submit" id="submit" value="Search" class="btn btn-info pull-right">
+		    </div>
+		  </form>
+	  </div>
+	</div>
+</div>
+				</div>
+				<div class="modal-footer">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="events-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Event</h4>
+				</div>
+				<div class="modal-body" style="height: 400px">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Date Picker for the Date Input in the Appointment Form -->
+	<script>
+	  $(function() {
+	  	$("#date").css('z-index','2000000');
+	    $( "#date" ).datepicker();
+	  });
+	</script>
+
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}portal/components/jquery/jquery.min.js"></script> -->
+	<script type="text/javascript" src="{{STATIC_URL}}portal/components/underscore/underscore-min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/components/bootstrap3/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/components/jstimezonedetect/jstz.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/nl-NL.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/fr-FR.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/de-DE.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/el-GR.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/it-IT.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/pl-PL.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/pt-BR.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/es-MX.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/es-ES.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/ru-RU.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/sv-SE.js"></script>
+  	<script type="text/javascript" src="{{STATIC_URL}}portal/js/language/cs-CZ.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/calendar.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/dailyhours.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}portal/js/date.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-formhelpers.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}portal/js/app.js"></script> -->
+{% if user.is_authenticated %}
+	Logged in as: {{ user.username }}
+	{% if user.username == 'student' %}
+		<script>
+			window.student = true;
+			window.tutor = false;
+			window.filter = false;
+			// console.log('Logged in as student');
+		</script>
+	{% elif user.username == 'admin' or user.username == 'tutor' %}
+		<script>
+			window.student = false;
+			window.tutor = true;
+			window.filter = false;
+			// console.log('Logged in as tutor');
+		</script>
+	{% endif %}
+{% else %}
+	<script>
+		window.student = false;
+		window.tutor = false;
+		window.filter = false;
+	</script>
+{% endif %}
+
+{% load bootstrap_calendar %}
+{% bootstrap_calendar_css %}
+{% bootstrap_calendar_js language="template" %}
+{% bootstrap_calendar_init language="template" %}
+{% bootstrap_calendar 'optional-css-classes' %}
+</div>
+
+<div id='output'></div>
+<script>
+	function submitForm() {
+		$.ajax({
+			type: "POST",
+			url: "http://localhost:8000/portal/",
+			dataType: "json",
+			async: true,
+			data: {
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+			},
+			success: function (json) {
+				//$('#output').html(json.message);
+				$('#output').html('AJAX Success');
+				console.log('AJAX Success')
+
+			}
+		});
+	}
+
+	function selectClass() {
+		$('.dropdown-menu li').click(function(e){
+			e.preventDefault();
+			  var selected = $(this).text();
+			  // $('.category').val(selected);
+			  console.log(selected);
+			});
+	}
+	function submitAppointment() {
+		 var selected = '';
+	    $('.dropdown-menu li').click(function(e){
+			e.preventDefault();
+			  selected = $(this).text();
+			  // $('.category').val(selected);
+			  console.log(selected);
+			});
+	}
+	function makeAppointment() {
+	    console.log('Make Appointment Clicked');
+	}
+	function showTutors() {
+	    //console.log('Tutors clicked');
+	}
+	function showHours() {
+	    // console.log('Hours clicked');
+	}
+	function getUnixTime(date_string) {
+		//string is of format: "18-Apr-2014 15:00:00"
+		var unixtime = Date.parse(date_string).getTime()/1000;
+		// console.log(unixtime + "000");
+		return (unixtime.toString() + "000")
+	}
+	// getUnixTime("18-Apr-2014 19:00:00");
+	// function search() {
+	// 	$.get( "/portal/search" )
+	//             .done(function( data ) {
+	//                 console.log(data.search_results)
+	//             });
+ //    }
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Schedule an Appointment</title>
+</head>
+<body>
+    <form action="/portal/make-appointment/" method="post">{% csrf_token %}
+        First Name: <input type="text" name="first_name"><br></br>
+        Last Name: <input type="text" name="last_name"><br></br>
+        UNCC Email: <input type="text" name="email"><br></br>
+        Course You Need Help With: <input type="text" name="course"><br></br>
+        Name of Preferred Tutor:
+        <select name="tutor">
+        	<option value="no_preference">Anyone Available</option>
+			<option value="Grace">Grace</option>
+			<option value="David">David</option>
+			<option value="Chinmai">Chinmai</option>
+		</select><br></br>
+		Calendar Date (Format Example: May 28 2014): <input type="text" name="date"><br></br>
+		Preferred Time (Format Example: 11:00AM): <input type="text" name="time"><br></br>
+        <input type="submit" value="Schedule Appointment">
+    </form>
+</body>
+</html>

@@ -1,0 +1,91 @@
+
+{% extends "portal/portal.html" %}
+{% comment %}
+  Main page of the portal.
+{% endcomment %}
+
+{% block head %}
+	<style type="text/css">
+        label, input {
+        display: inline-block;
+        vertical-align: baseline;
+        width: 200px;
+        margin: 1px;
+    }
+
+    label {
+        color: #2D2D2D;
+        font-size: 15px;
+    }
+
+    form, input {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        width: 260px;
+    }
+
+    form {
+        width: 300px;
+    }
+        .form
+        {
+            margin-left: 42%;
+            width: 300px;
+        }
+        .centered
+        {
+            text-align:center;
+        }
+        .custom-btn {
+            white-space: normal;
+            width: 250px !important;
+        }
+
+	</style>
+    <meta charset="utf-8">
+    <title>Home</title>
+    {% load staticfiles %}
+
+{% endblock %}
+
+
+{% block content %}
+    <section>
+    <h2>Welcome, {{ user.username }}</h2>
+    <p>This is the main page of the web portal.</p>
+    </section>
+    <script src="{% static 'portal/js/jquery-1.11.0.min.js' %}"></script>
+    <!-- Load Bootstrap -->
+    {% load bootstrap3 %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %} {% bootstrap_javascript %}
+    <!-- IMPORTANT enctype attribute! -->
+    
+    <div class="form">
+        <div id="appointment-form">
+            <form action="" method = "POST" class="form-horizontal" role="form">
+                {% csrf_token %}
+                {{form.as_p}}
+                {% buttons %}
+                <button type="submit" class="btn btn-primary custom-btn" id="submit-all">
+                {% bootstrap_icon "glyphicon glyphicon-send" %} Make Appointment
+        </button>
+    {% endbuttons %}
+            </form>
+        </div>
+    </div>
+    <div class="centered">
+    <!-- {% buttons %}
+        <button type="submit" class="btn btn-primary custom-btn" id="submit-all">
+            {% bootstrap_icon "cloud-upload" %} Make Appointment
+        </button>
+    {% endbuttons %} -->
+    </div>
+    <!-- <section>
+        <ul>
+          <li><a href="/">home</a></li>
+          <li><a href="/logout/">logout</a></li>
+        </ul>
+    </section> -->
+{% endblock %}

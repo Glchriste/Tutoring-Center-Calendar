@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% comment %}
+  Main page of Tutoring Application's website.
+{% endcomment %}
+
+{% block head %}
+  <title>Tutoring Application</title>
+{% endblock %}
+
+{% block body %}
+  <header>
+      <h1>Tutoring Application</h1>
+  </header>
+
+  <section>
+      <p>Welcome to the Tutoring Application. Please click <a href="/login/">here</a> to log into our web portal.</p>
+  </section>
+  {% endblock %}
+  {% load bootstrap_calendar %}
+{% bootstrap_controls 'optional-css-classes' %}
+
+{% bootstrap_calendar 'optional-css-classes' %}

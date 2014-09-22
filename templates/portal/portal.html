@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% comment %}
+  This is the main template for all portal pages.
+{% endcomment %}
+
+{% block head %}
+  <title>Tutoring Application | {% block title %}{% endblock %}</title>
+{% endblock %}
+
+{% block body %}
+
+  <!-- <header>
+    <h1>Tutoring Application</h1>
+  </header> -->
+
+  <!-- <section>
+    <ul>
+      <li><a href="/">home</a></li>
+      <li><a href="/logout/">logout</a></li>
+    </ul>
+  </section> -->
+
+  {% block content %}{% endblock %}
+  
+  <section>
+    <!-- <ul>
+      <li><a href="/">home</a></li>
+      <li><a href="/logout/">logout</a></li>
+    </ul> -->
+    <ul class="nav nav-pills">
+    <li class="active"><a href="/">Home</a></li>
+    {% if user.is_authenticated %}
+    <li><a href="/logout/">Logout</a></li>
+    {% else %}
+     <li><a href="/login/">Login</a></li>
+    {% endif %}
+
+  </ul>
+  </section>
+  <footer class="footer">
+<!--   {% if not user.is_authenticated %}
+    <br></br>Click <a href="http://localhost:8000/login/">here</a> to log in. <br></br>
+  {% endif %} -->
+</footer>
+  <br></br>
+  <footer>
+    <span></span>
+  </footer>
+{% endblock %}

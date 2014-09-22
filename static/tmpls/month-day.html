@@ -1,0 +1,33 @@
+
+
+<div class="cal-month-day <%= cls %> <% if (events.length == 0) {%>cal-month-day-slash<% } %>">
+	<span class="pull-left" data-cal-date="<%=  data_day %>"  data-cal-view="day" rel="tooltip" data-original-title="<%= tooltip %>"><%= day %></span>
+	
+	<!-- {% if user.is_authenticated %} -->
+	<% if (events.length > 0) {%>
+		<div class="events-list">
+			
+			<% _.each(events, function(event){ %>
+				<% if (((window.student == true && window.tutor == false) || (window.student == false && window.tutor == false)) && event.class == 'event-success') {%>
+	            <a href="<%= event.url %>" data-event-id="<%= event.id %>" data-event-class="<%= event.class %>"
+				   class="pull-right event <%= event.class %>  event<%= event.id %>" rel="tooltip"
+	               data-original-title="<%= event.title %>" data-event-start="<%= event.start %>" data-event-end="<%= event.end %>" data-toggle="tooltip" title="<%= event.title %>" style='visibility:visible'></a>
+	               <script>
+	               	// console.log('Loading events as student');
+	               </script>
+	            <% } %>
+	            <% if (window.student == false && window.tutor == true && event.class == 'event-primary' ){ %>
+		            	<a href="<%= event.url %>" data-event-id="<%= event.id %>" data-event-class="<%= event.class %>"
+					   class="pull-right event <%= event.class %>  event<%= event.id %>" rel="tooltip"
+		               data-original-title="<%= event.title %>" data-event-start="<%= event.start %>" data-event-end="<%= event.end %>" data-toggle="tooltip" title="<%= event.title %>" style='visibility:visible'></a>
+		               <script>
+		               	// console.log('Loading events as tutor');
+		               </script>
+	            <% } %>
+               <!-- <%= event.start_date %><br/><%= event.title %></a> Shows the event start date and title-->
+			<% }); %>
+
+
+		</div>
+	<% } %>
+</div>

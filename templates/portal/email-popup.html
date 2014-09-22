@@ -1,0 +1,14 @@
+<script language="JavaScript" type="text/javascript">
+function setFields() {
+	window.opener.document.makeAppointment.senderEmail.value = document.emailForm.senderEmail.value;
+	
+}
+</script>
+
+<form name="emailForm" method="post" action="#">
+<p>What is your e-mail address?<br />
+<input type="text" name="senderEmail">
+</p>
+
+<button type="button" onclick="setFields();window.opener.makeAppointment.submit();" name="submit" value="send e-mail">Send e-mail</button>
+</form>
