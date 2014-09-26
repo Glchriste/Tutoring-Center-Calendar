@@ -2,6 +2,7 @@ Tutoring-Center-Calendar
 ========================
 
 A web application that allows students to make appointments with tutors in the CCI tutoring center.
+
 Warning: At the moment, you need Django 1.6.5. This project breaks with Django 1.7!
 
 ###Requirements
