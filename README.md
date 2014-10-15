@@ -3,6 +3,7 @@ Tutoring-Center-Calendar
 
 A web application that allows students to make appointments with tutors in the CCI tutoring center.
 
+Warning--at the moment, you need Django 1.6.5. This project breaks with Django 1.7!
 
 ###Requirements
 *   Django 1.6.5
@@ -10,7 +11,7 @@ A web application that allows students to make appointments with tutors in the C
 
 
 ###Installation
-1. Install [Django](https://www.djangoproject.com/)
+1. Install [Django 1.6.5](https://www.djangoproject.com/)
 2. Install [Django-Bootstrap-3](https://github.com/dyve/django-bootstrap3)
 3. Install [Django-Bootstrap-Calendar](https://github.com/sandlbn/django-bootstrap-calendar) (i.e., run `python setup.py install`)
 4. Install [jsmin 2.0.9](https://pypi.python.org/pypi/jsmin)
